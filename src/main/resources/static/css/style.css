@@ -176,57 +176,12 @@ h1, h2, h3, h4, p { margin: 0; }
     font-weight: 400;
 }
 
-.sidebar-bottom { margin-top: auto; }
 
-.sidebar-support {
-    margin-top: 50px;
-    padding: 20px 16px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, .055);
-    border: 1px solid rgba(255, 255, 255, .065);
-}
 
-.sidebar-support-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 9px;
-    background: rgba(59, 130, 246, .22);
-    color: #9dc8ff;
-    font-size: 18px;
-    margin-bottom: 12px;
-}
 
-.sidebar-support strong {
-    display: block;
-    color: #f1f5ff;
-    font-size: 13px;
-}
 
-.sidebar-support p {
-    font-size: 11px;
-    color: #90a0b9;
-    margin-top: 5px;
-}
 
-.small-chip {
-    display: inline-block;
-    font-size: 10px;
-    color: #c3d9ff;
-    background: rgba(37, 99, 235, .18);
-    padding: 5px 9px;
-    border-radius: 6px;
-    margin-top: 14px;
-}
 
-.sidebar-footer {
-    text-align: center;
-    color: #677997;
-    margin-top: 24px;
-    font-size: 10px;
-}
 
 .sidebar-overlay { display: none; }
 
