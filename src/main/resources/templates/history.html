@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Account History | BankFlow</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script defer th:src="@{/js/dashboard.js}"></script>
+</head>
+<body>
+<div class="app-shell">
+
+    <aside class="sidebar" id="sidebar">
+        <a th:href="@{/}" class="brand">
+            <span class="brand-symbol">B<span>↗</span></span>
+            <span class="brand-text">BankFlow<small>FINANCIAL CONSOLE</small></span>
+        </a>
+        <div class="sidebar-label">WORKSPACE</div>
+        <nav class="side-nav" aria-label="Main navigation">
+            <a class="nav-link" th:href="@{/}"><span class="nav-icon">▦</span> Dashboard</a>
+            <a class="nav-link" th:href="@{/#transfer}"><span class="nav-icon">⇄</span> Transfer Funds</a>
+            <a class="nav-link" th:href="@{/deposit}"><span class="nav-icon">＋</span> Deposit Money</a>
+            <a class="nav-link" th:href="@{/withdraw}"><span class="nav-icon">−</span> Withdraw Money</a>
+            <a class="nav-link" th:href="@{/large-transfers}"><span class="nav-icon">▤</span> Large Transfers</a>
+        </nav>
+        <div class="sidebar-bottom">
+            
+            <div class="sidebar-footer">Full-Stack Assignment 01</div>
+        </div>
+    </aside>
+
+    <button class="sidebar-overlay" type="button"
+            aria-label="Close navigation" data-sidebar-close></button>
+
+    <div class="main-shell">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-button" type="button"
+                        data-sidebar-toggle aria-label="Open navigation"
+                        aria-expanded="false">☰</button>
+                <div class="breadcrumb">
+                    <span>Accounts</span><b>/</b><strong>History</strong>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <span class="live-label"><i></i> System Online</span>
+                <span class="topbar-divider"></span>
+                <div class="profile">
+                    <span class="avatar">BF</span>
+                    <span class="profile-name">Bank Operator<small>Demo Workspace</small></span>
+                </div>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <section class="page-intro">
+                <div>
+                    <span class="eyebrow">ACCOUNT DETAILS</span>
+                    <h1>Transaction History<span class="heading-dot">.</span></h1>
+                    <p>Review your customer's account activity and transaction records.</p>
+                </div>
+                <a class="button button-outline" th:href="@{/}">← Back to Dashboard</a>
+            </section>
+
+            <section class="account-banner">
+                <div>
+                    <span class="account-banner-label">CUSTOMER PROFILE</span>
+                    <h2 th:text="${customer.fullName}">Customer Name</h2>
+                    <p>Account number:
+                        <strong th:text="${customer.accountNumber}">100001</strong>
+                    </p>
+                </div>
+                <div class="account-banner-icon">◎</div>
+            </section>
+
+            <section class="stats-grid stats-grid-two">
+                <article class="metric-card">
+                    <div class="metric-icon blue">◉</div>
+                    <span class="metric-label">Current Account Balance</span>
+                    <div class="metric-value metric-money">
+                        LKR
+                        <span th:text="${#numbers.formatDecimal(customer.balance,1,'COMMA',2,'POINT')}">0.00</span>
+                    </div>
+                    <span class="metric-note">Available customer balance</span>
+                </article>
+                <article class="metric-card">
+                    <div class="metric-icon green">↗</div>
+                    <span class="metric-label">Total Successful Transfers Sent</span>
+                    <div class="metric-value metric-money">
+                        LKR
+                        <span th:text="${#numbers.formatDecimal(totalSent,1,'COMMA',2,'POINT')}">0.00</span>
+                    </div>
+                    <span class="metric-note">Excludes failed transfers and withdrawals</span>
+                </article>
+            </section>
+
+            <section class="panel table-panel">
+                <div class="table-panel-heading">
+                    <div>
+                        <span class="eyebrow">TRANSACTION RECORDS</span>
+                        <h2>Account Activity</h2>
+                        <p>All transactions sent or received by this account.</p>
+                    </div>
+                    <span class="table-count"
+                          th:text="${#lists.size(transactions) + ' records'}">0 records</span>
+                </div>
+
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>ID</th><th>TYPE</th><th>FROM</th><th>TO</th>
+                            <th>AMOUNT</th><th>FEE</th><th>STATUS</th><th>DATE</th>
+                            <th>DESCRIPTION</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="tx : ${transactions}">
+                            <td class="muted-cell" th:text="${'#' + tx.id}">#1</td>
+                            <td><span class="type-tag" th:text="${tx.type}">TRANSFER</span></td>
+                            <td th:text="${tx.fromAccount}">-</td>
+                            <td th:text="${tx.toAccount}">-</td>
+                            <td class="money-cell">
+                                LKR <span th:text="${#numbers.formatDecimal(tx.amount,1,'COMMA',2,'POINT')}">0.00</span>
+                            </td>
+                            <td th:text="${#numbers.formatDecimal(tx.fee,1,'COMMA',2,'POINT')}">0.00</td>
+                            <td>
+                                <span class="status-pill"
+                                      th:classappend="${tx.status.name() == 'SUCCESS'} ? 'is-success' : 'is-failed'"
+                                      th:text="${tx.status}">SUCCESS</span>
+                            </td>
+                            <td class="muted-cell"
+                                th:text="${#temporals.format(tx.createdAt,'dd MMM yyyy, HH:mm')}">-</td>
+                            <td class="details-cell" th:text="${tx.description}">-</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(transactions)}">
+                            <td class="empty-table" colspan="9">This account has no transactions yet.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <footer class="page-footer">
+                <span>© BankFlow · Educational Banking Application</span>
+                <span>Account Activity Report</span>
+            </footer>
+        </main>
+    </div>
+</div>
+</body>
+</html>

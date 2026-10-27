@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Deposit Funds | BankFlow</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script defer th:src="@{/js/dashboard.js}"></script>
+</head>
+<body>
+<div class="app-shell">
+
+    <aside class="sidebar" id="sidebar">
+        <a th:href="@{/}" class="brand">
+            <span class="brand-symbol">B<span>↗</span></span>
+            <span class="brand-text">BankFlow<small>FINANCIAL CONSOLE</small></span>
+        </a>
+        <div class="sidebar-label">WORKSPACE</div>
+        <nav class="side-nav" aria-label="Main navigation">
+            <a class="nav-link" th:href="@{/}"><span class="nav-icon">▦</span> Dashboard</a>
+            <a class="nav-link" th:href="@{/#transfer}"><span class="nav-icon">⇄</span> Transfer Funds</a>
+            <a class="nav-link active" aria-current="page" th:href="@{/deposit}"><span class="nav-icon">＋</span> Deposit Money</a>
+            <a class="nav-link" th:href="@{/withdraw}"><span class="nav-icon">−</span> Withdraw Money</a>
+            <a class="nav-link" th:href="@{/large-transfers}"><span class="nav-icon">▤</span> Large Transfers</a>
+        </nav>
+    </aside>
+
+    <button class="sidebar-overlay" type="button"
+            aria-label="Close navigation" data-sidebar-close></button>
+
+    <div class="main-shell">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-button" type="button"
+                        data-sidebar-toggle aria-label="Open navigation"
+                        aria-expanded="false">☰</button>
+                <div class="breadcrumb">
+                    <span>Transactions</span><b>/</b><strong>Deposit</strong>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <span class="live-label"><i></i> System Online</span>
+                <span class="topbar-divider"></span>
+                <div class="profile">
+                    <span class="avatar">BF</span>
+                    <span class="profile-name">Bank Operator<small>Demo Workspace</small></span>
+                </div>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <section class="page-intro">
+                <div>
+                    <span class="eyebrow">ACCOUNT FUNDING</span>
+                    <h1>Deposit Funds<span class="heading-dot">.</span></h1>
+                    <p>Increase the available balance of a customer account.</p>
+                </div>
+                <a class="button button-outline" th:href="@{/}">← Back to Dashboard</a>
+            </section>
+
+            <section class="operation-layout">
+                <div class="panel operation-panel">
+                    <div class="panel-header">
+                        <div>
+                            <span class="eyebrow">NEW DEPOSIT</span>
+                            <h2>Deposit Details</h2>
+                            <p>Complete the fields to credit a customer account.</p>
+                        </div>
+                        <span class="panel-icon green-panel-icon">＋</span>
+                    </div>
+
+                    <div class="notice notice-success" th:if="${success}" role="status">
+                        <span class="notice-icon">✓</span>
+                        <div><strong>Deposit successful</strong><p th:text="${success}"></p></div>
+                        <button type="button" data-dismiss-alert aria-label="Dismiss">×</button>
+                    </div>
+                    <div class="notice notice-error" th:if="${error}" role="alert">
+                        <span class="notice-icon">!</span>
+                        <div><strong>Deposit failed</strong><p th:text="${error}"></p></div>
+                        <button type="button" data-dismiss-alert aria-label="Dismiss">×</button>
+                    </div>
+
+                    <form th:action="@{/deposit}" method="post">
+                        <div class="form-group">
+                            <label for="accountNumber">Customer account <span class="required">*</span></label>
+                            <select id="accountNumber" name="accountNumber"
+                                    class="form-control" required>
+                                <option value="">Select customer account</option>
+                                <option th:each="c : ${customers}"
+                                        th:unless="${c.accountNumber == '999999'}"
+                                        th:value="${c.accountNumber}"
+                                        th:text="${c.fullName + ' · ' + c.accountNumber}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="amount">Deposit amount (LKR) <span class="required">*</span></label>
+                            <div class="input-with-prefix">
+                                <span>LKR</span>
+                                <input id="amount" name="amount" class="form-control"
+                                       type="number" min="0.01" step="0.01"
+                                       placeholder="Enter amount" required>
+                            </div>
+                            <small class="form-help">Enter a positive amount with up to two decimal places.</small>
+                        </div>
+
+                        <div class="info-strip">
+                            <span>ⓘ</span> The selected customer's balance will increase by the deposit amount.
+                        </div>
+
+                        <button class="button button-primary full-width" type="submit">
+                            Confirm Deposit <span>→</span>
+                        </button>
+                    </form>
+                </div>
+
+                <aside class="operation-aside">
+                    <div class="aside-illustration deposit-illustration">
+                        <span class="illustration-mark">＋</span>
+                        <h3>Adding Funds</h3>
+                        <p>Deposits are processed by the application's transactional service.</p>
+                    </div>
+
+                    <div class="panel mini-info-card">
+                        <span class="eyebrow">HOW IT WORKS</span>
+                        <div class="step-row">
+                            <span>01</span><div><strong>Select account</strong><p>Choose the customer receiving funds.</p></div>
+                        </div>
+                        <div class="step-row">
+                            <span>02</span><div><strong>Enter amount</strong><p>Specify the deposit in LKR.</p></div>
+                        </div>
+                        <div class="step-row">
+                            <span>03</span><div><strong>Confirm</strong><p>The balance and audit record are updated.</p></div>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+
+            <footer class="page-footer">
+                <span>© BankFlow · Educational Banking Application</span>
+                <span>Deposit Management</span>
+            </footer>
+        </main>
+    </div>
+</div>
+</body>
+</html>

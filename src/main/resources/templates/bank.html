@@ -1,0 +1,418 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard | BankFlow</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <script defer th:src="@{/js/dashboard.js}"></script>
+</head>
+
+<body>
+<div class="app-shell">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <a th:href="@{/}" class="brand">
+            <span class="brand-symbol">B<span>↗</span></span>
+            <span class="brand-text">BankFlow<small>FINANCIAL CONSOLE</small></span>
+        </a>
+
+        <div class="sidebar-label">WORKSPACE</div>
+
+        <nav class="side-nav" aria-label="Main navigation">
+            <a th:href="@{/}" class="nav-link active" aria-current="page">
+                <span class="nav-icon">▦</span> Dashboard
+            </a>
+            <a th:href="@{/#transfer}" class="nav-link">
+                <span class="nav-icon">⇄</span> Transfer Funds
+            </a>
+            <a th:href="@{/deposit}" class="nav-link">
+                <span class="nav-icon">＋</span> Deposit Money
+            </a>
+            <a th:href="@{/withdraw}" class="nav-link">
+                <span class="nav-icon">−</span> Withdraw Money
+            </a>
+            <a th:href="@{/large-transfers}" class="nav-link">
+                <span class="nav-icon">▤</span> Large Transfers
+            </a>
+        </nav>
+    </aside>
+
+    <button class="sidebar-overlay" type="button"
+            aria-label="Close navigation" data-sidebar-close></button>
+
+    <!-- PAGE -->
+    <div class="main-shell">
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="menu-button" type="button"
+                        data-sidebar-toggle aria-label="Open navigation"
+                        aria-expanded="false">☰</button>
+                <div class="breadcrumb">
+                    <span>Workspace</span>
+                    <b>/</b>
+                    <strong>Dashboard</strong>
+                </div>
+            </div>
+            <div class="topbar-right">
+                <span class="live-label"><i></i> System Online</span>
+                <span class="topbar-divider"></span>
+                <div class="profile">
+                    <span class="avatar">BF</span>
+                    <span class="profile-name">Bank Operator<small>Demo Workspace</small></span>
+                </div>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <section class="page-intro">
+                <div>
+                    <span class="eyebrow">FINANCIAL OVERVIEW</span>
+                    <h1>Banking Dashboard<span class="heading-dot">.</span></h1>
+                    <p>Manage customer accounts, monitor activity and transfer funds.</p>
+                </div>
+                <a class="button button-outline" th:href="@{/large-transfers}">
+                    <span>▤</span> View Reports
+                </a>
+            </section>
+
+            <!-- ALERTS -->
+            <div th:if="${success}" class="notice notice-success" role="status">
+                <span class="notice-icon">✓</span>
+                <div><strong>Operation successful</strong>
+                    <p th:text="${success}"></p></div>
+                <button type="button" data-dismiss-alert aria-label="Dismiss">×</button>
+            </div>
+            <div th:if="${error}" class="notice notice-error" role="alert">
+                <span class="notice-icon">!</span>
+                <div><strong>Action could not be completed</strong>
+                    <p th:text="${error}"></p></div>
+                <button type="button" data-dismiss-alert aria-label="Dismiss">×</button>
+            </div>
+
+            <!-- BALANCE HERO -->
+            <section class="overview-grid">
+                <div class="balance-hero">
+                    <div class="hero-decoration hero-decoration-one"></div>
+                    <div class="hero-decoration hero-decoration-two"></div>
+                    <div class="hero-content">
+                        <div class="hero-top">
+                            <span class="hero-badge">BANK OVERVIEW</span>
+                            <span class="hero-symbol">↗</span>
+                        </div>
+                        <p class="hero-label">Total customer account balances</p>
+                        <h2 class="hero-balance">
+                            <small>LKR</small>
+                            <span th:text="${#numbers.formatDecimal(totalBalance, 1, 'COMMA', 2, 'POINT')}">85,000.00</span>
+                        </h2>
+                        <div class="hero-bottom">
+                            <span><span class="hero-pulse"></span> Connected to MySQL</span>
+                            <span>Bank Transfer System</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-panel">
+                    <div class="panel-heading-inline">
+                        <div>
+                            <span class="eyebrow">SHORTCUTS</span>
+                            <h3>Quick actions</h3>
+                        </div>
+                        <span class="subtle-icon">↗</span>
+                    </div>
+                    <a class="quick-action" th:href="@{/#transfer}">
+                        <span class="quick-icon blue">⇄</span>
+                        <span><strong>Transfer funds</strong><small>Between customer accounts</small></span>
+                        <span class="quick-arrow">→</span>
+                    </a>
+                    <a class="quick-action" th:href="@{/deposit}">
+                        <span class="quick-icon green">＋</span>
+                        <span><strong>Make a deposit</strong><small>Add money to an account</small></span>
+                        <span class="quick-arrow">→</span>
+                    </a>
+                    <a class="quick-action" th:href="@{/withdraw}">
+                        <span class="quick-icon amber">−</span>
+                        <span><strong>Withdraw funds</strong><small>Deduct an account balance</small></span>
+                        <span class="quick-arrow">→</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- STATISTICS -->
+            <section class="stats-grid" aria-label="Account statistics">
+                <article class="metric-card">
+                    <div class="metric-icon blue">♙</div>
+                    <span class="metric-label">Total Customers</span>
+                    <div class="metric-value" th:text="${customerCount}">3</div>
+                    <span class="metric-note">Registered bank accounts</span>
+                </article>
+
+                <article class="metric-card">
+                    <div class="metric-icon green">✓</div>
+                    <span class="metric-label">Successful Transactions</span>
+                    <div class="metric-value" th:text="${successCount}">0</div>
+                    <span class="metric-note"><span class="status-dot green-dot"></span> Completed successfully</span>
+                </article>
+
+                <article class="metric-card">
+                    <div class="metric-icon red">!</div>
+                    <span class="metric-label">Failed Transactions</span>
+                    <div class="metric-value" th:text="${failedCount}">0</div>
+                    <span class="metric-note"><span class="status-dot red-dot"></span> Failed or rolled back</span>
+                </article>
+            </section>
+
+            <!-- TRANSFER AND CUSTOMER CREATION -->
+            <section class="work-grid">
+
+                <div class="panel" id="transfer">
+                    <div class="panel-header">
+                        <div>
+                            <span class="eyebrow">MONEY MOVEMENT</span>
+                            <h2>Transfer Funds</h2>
+                            <p>Move funds between customer accounts.</p>
+                        </div>
+                        <span class="panel-icon">⇄</span>
+                    </div>
+
+                    <div th:if="${feeEnabled}" class="hint-box">
+                        The 1% fee extension is enabled. Fees are credited to account 999999.
+                    </div>
+
+                    <form id="transferForm" th:action="@{/transfer}"
+                          th:object="${transferRequest}" method="post"
+                          th:attr="data-fee-enabled=${feeEnabled}" novalidate>
+
+                        <div class="form-group">
+                            <label for="fromAccount">From account <span class="required">*</span></label>
+                            <select th:field="*{fromAccount}" class="form-control"
+                                    th:classappend="${#fields.hasErrors('fromAccount')} ? 'invalid' : ''">
+                                <option value="">Choose sender account</option>
+                                <option th:each="c : ${allCustomers}"
+                                        th:unless="${c.accountNumber == '999999'}"
+                                        th:value="${c.accountNumber}"
+                                        th:text="${c.fullName + ' · ' + c.accountNumber}"></option>
+                            </select>
+                            <small class="field-error"
+                                   th:if="${#fields.hasErrors('fromAccount')}"
+                                   th:errors="*{fromAccount}"></small>
+                        </div>
+
+                        <div class="switch-indicator" aria-hidden="true">
+                            <span>↓</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="toAccount">To account <span class="required">*</span></label>
+                            <select th:field="*{toAccount}" class="form-control"
+                                    th:classappend="${#fields.hasErrors('toAccount')} ? 'invalid' : ''">
+                                <option value="">Choose recipient account</option>
+                                <option th:each="c : ${allCustomers}"
+                                        th:unless="${c.accountNumber == '999999'}"
+                                        th:value="${c.accountNumber}"
+                                        th:text="${c.fullName + ' · ' + c.accountNumber}"></option>
+                            </select>
+                            <small class="field-error"
+                                   th:if="${#fields.hasErrors('toAccount')}"
+                                   th:errors="*{toAccount}"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="amount">Transfer amount (LKR) <span class="required">*</span></label>
+                            <div class="input-with-prefix">
+                                <span>LKR</span>
+                                <input class="form-control"
+                                       th:classappend="${#fields.hasErrors('amount')} ? 'invalid' : ''"
+                                       th:field="*{amount}" type="number"
+                                       min="0.01" step="0.01"
+                                       placeholder="0.00">
+                            </div>
+                            <small class="field-error"
+                                   th:if="${#fields.hasErrors('amount')}"
+                                   th:errors="*{amount}"></small>
+                        </div>
+
+                        <div class="transfer-preview">
+                            <div><span>Transfer amount</span><strong id="previewAmount">LKR 0.00</strong></div>
+                            <div><span>Estimated fee</span><strong id="previewFee">LKR 0.00</strong></div>
+                            <div class="preview-total"><span>Estimated total debit</span><strong id="previewTotal">LKR 0.00</strong></div>
+                            <small>Preview only. The server calculates the actual transaction.</small>
+                        </div>
+
+                        <label class="check-row">
+                            <input type="checkbox" th:field="*{simulateFailure}">
+                            <span>
+                                <strong>Simulate system failure</strong>
+                                <small>Test @Transactional rollback behavior</small>
+                            </span>
+                        </label>
+
+                        <button class="button button-primary full-width" type="submit">
+                            Transfer Funds <span>→</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="panel" id="add-customer">
+                    <div class="panel-header">
+                        <div>
+                            <span class="eyebrow">ACCOUNT MANAGEMENT</span>
+                            <h2>New Customer</h2>
+                            <p>Register a new customer account.</p>
+                        </div>
+                        <span class="panel-icon">＋</span>
+                    </div>
+
+                    <form th:action="@{/customers}" th:object="${customerForm}"
+                          method="post" novalidate>
+
+                        <div class="form-group">
+                            <label for="accountNumber">Account number <span class="required">*</span></label>
+                            <input class="form-control" th:field="*{accountNumber}"
+                                   maxlength="6" placeholder="e.g. 100004">
+                            <small class="field-error" th:if="${#fields.hasErrors('accountNumber')}"
+                                   th:errors="*{accountNumber}"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fullName">Full name <span class="required">*</span></label>
+                            <input class="form-control" th:field="*{fullName}"
+                                   placeholder="Customer's full name">
+                            <small class="field-error" th:if="${#fields.hasErrors('fullName')}"
+                                   th:errors="*{fullName}"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email address <span class="required">*</span></label>
+                            <input class="form-control" th:field="*{email}"
+                                   type="email" placeholder="customer@example.com">
+                            <small class="field-error" th:if="${#fields.hasErrors('email')}"
+                                   th:errors="*{email}"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="balance">Opening balance (LKR) <span class="required">*</span></label>
+                            <div class="input-with-prefix">
+                                <span>LKR</span>
+                                <input class="form-control" th:field="*{balance}"
+                                       type="number" min="0" step="0.01" placeholder="0.00">
+                            </div>
+                            <small class="field-error" th:if="${#fields.hasErrors('balance')}"
+                                   th:errors="*{balance}"></small>
+                        </div>
+
+                        <div class="info-strip"><span>ⓘ</span> Each account requires a unique six-digit account number and email address.</div>
+
+                        <button class="button button-dark full-width" type="submit">
+                            Create Customer Account <span>＋</span>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- CUSTOMERS -->
+            <section class="panel table-panel" id="customers">
+                <div class="table-panel-heading">
+                    <div>
+                        <span class="eyebrow">ACCOUNT DIRECTORY</span>
+                        <h2>Customer Accounts</h2>
+                        <p>View customer details and available balances.</p>
+                    </div>
+                    <form class="search-form" th:action="@{/}" method="get">
+                        <input name="keyword" type="search" aria-label="Search customers"
+                               th:value="${keyword}" placeholder="Search by name...">
+                        <button type="submit" class="button button-primary">Search</button>
+                        <a class="button button-outline" th:href="@{/}">Reset</a>
+                    </form>
+                </div>
+
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>ACCOUNT</th>
+                            <th>CUSTOMER</th>
+                            <th>EMAIL</th>
+                            <th>BALANCE</th>
+                            <th>ACTION</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="c : ${customers}">
+                            <td><span class="account-tag" th:text="${c.accountNumber}">100001</span></td>
+                            <td>
+                                <div class="person-cell">
+                                    <span class="person-avatar" th:text="${#strings.substring(c.fullName,0,1)}">K</span>
+                                    <strong th:text="${c.fullName}">Customer</strong>
+                                </div>
+                            </td>
+                            <td class="muted-cell" th:text="${c.email}">email@example.com</td>
+                            <td class="money-cell">
+                                LKR <span th:text="${#numbers.formatDecimal(c.balance,1,'COMMA',2,'POINT')}">0.00</span>
+                            </td>
+                            <td><a class="text-link"
+                                   th:href="@{/accounts/{account}/history(account=${c.accountNumber})}">View History →</a></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(customers)}">
+                            <td class="empty-table" colspan="5">No matching customers found.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- TRANSACTIONS -->
+            <section class="panel table-panel" id="transactions">
+                <div class="table-panel-heading">
+                    <div>
+                        <span class="eyebrow">AUDIT TRAIL</span>
+                        <h2>Latest Transactions</h2>
+                        <p>Successful and failed transaction activity.</p>
+                    </div>
+                    <span class="table-count" th:text="${#lists.size(transactions) + ' records'}">0 records</span>
+                </div>
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <thead>
+                        <tr>
+                            <th>TYPE</th><th>FROM</th><th>TO</th><th>AMOUNT</th>
+                            <th>FEE</th><th>STATUS</th><th>DATE</th><th>DETAILS</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="tx : ${transactions}">
+                            <td><span class="type-tag" th:text="${tx.type}">TRANSFER</span></td>
+                            <td th:text="${tx.fromAccount}">-</td>
+                            <td th:text="${tx.toAccount}">-</td>
+                            <td class="money-cell">
+                                LKR <span th:text="${#numbers.formatDecimal(tx.amount,1,'COMMA',2,'POINT')}">0.00</span>
+                            </td>
+                            <td th:text="${#numbers.formatDecimal(tx.fee,1,'COMMA',2,'POINT')}">0.00</td>
+                            <td>
+                                <span class="status-pill"
+                                      th:classappend="${tx.status.name() == 'SUCCESS'} ? 'is-success' : 'is-failed'"
+                                      th:text="${tx.status}">SUCCESS</span>
+                            </td>
+                            <td class="muted-cell" th:text="${#temporals.format(tx.createdAt,'dd MMM yyyy, HH:mm')}">-</td>
+                            <td class="details-cell" th:text="${tx.description}">-</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(transactions)}">
+                            <td class="empty-table" colspan="8">No transactions recorded yet.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <footer class="page-footer">
+                <span>© BankFlow · Educational Banking Application</span>
+                <span>Built with Spring Boot, Thymeleaf & MySQL</span>
+            </footer>
+        </main>
+    </div>
+</div>
+</body>
+</html>
